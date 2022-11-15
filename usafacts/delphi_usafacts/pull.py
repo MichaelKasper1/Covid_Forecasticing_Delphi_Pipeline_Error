@@ -173,8 +173,8 @@ def pull_usafacts_data(base_url: str, metric: str, logger: Logger, cache: str=No
         n_days += 1
     if n_days != len(unique_days):
         raise ValueError(
-            f"Not every day between {min_timestamp} and "
-            f"{max_timestamp} is represented."
+            f"More than one day between {min_timestamp} and "
+            f"{max_timestamp} is not represented."
         )
     return df.loc[
         df["timestamp"] >= min_ts,
