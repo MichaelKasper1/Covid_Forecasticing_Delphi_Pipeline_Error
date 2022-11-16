@@ -169,11 +169,28 @@ def pull_usafacts_data(base_url: str, metric: str, logger: Logger, cache: str=No
     min_timestamp = min(unique_days)
     max_timestamp = max(unique_days)
     n_days = (max_timestamp - min_timestamp) / np.timedelta64(1, "D") + 1
+    
+    # Make exception for July 1st 2022 which is a missing day
+    if pd.Timestamp('2022-06-30 00:00:00') and pd.Timestamp('2022-07-02 00:00:00') in unique_days:
+    n_days -= 1
+            
+    # Loop to discover and report missing days
     if n_days != len(unique_days):
-        raise ValueError(
-            f"Not every day between {min_timestamp} and "
-            "{max_timestamp} is represented."
-        )
+        x = min_timestamp
+        missing_days = []
+        n = 0
+        while x < max_timestamp:
+            if x in unique_days:
+                x = x + pd.Timedelta(days=1)
+            else:
+                missing_days.append(x)
+                n += 1
+                raise ValueError(
+                    f"Between {min_timestamp} and {max_timestamp}, "
+                    f"{n} days are not represented. "
+                    f"Missing days are: {missing_days}."
+                )
+        
     return df.loc[
         df["timestamp"] >= min_ts,
         [  # Reorder
