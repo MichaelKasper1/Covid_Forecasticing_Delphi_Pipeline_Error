@@ -172,7 +172,7 @@ def pull_usafacts_data(base_url: str, metric: str, logger: Logger, cache: str=No
     
     # Make exception for July 1st 2022 which is a missing day
     if pd.Timestamp('2022-06-30 00:00:00') and pd.Timestamp('2022-07-02 00:00:00') in unique_days:
-    n_days -= 1
+        n_days -= 1
             
     # Loop to discover and report missing days
     if n_days != len(unique_days):
